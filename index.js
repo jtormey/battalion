@@ -29,8 +29,12 @@ class Battalion {
       let { _type, _id } = data
 
       if (methods[_type]) {
-        let result = methods[_type](data)
-        sendResponse(_id, result)
+        try {
+          let result = methods[_type](data)
+          sendResponse(_id, result)
+        } catch (e) {
+          sendError(_id, e.message)
+        }
       } else {
         let error = 'Function name not on interface'
         sendError(_id, error)
