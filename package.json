@@ -7,5 +7,8 @@
   "license": "MIT",
   "devDependencies": {
     "standard": "^10.0.2"
+  },
+  "optionalDependencies": {
+    "data.task": "^3.1.1"
   }
 }
