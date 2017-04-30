@@ -92,7 +92,9 @@ class PoolInstance {
   constructor (WorkerClass, options = {}) {
     this._queue = []
     this._pending = {}
+    this._listeners = []
     this._options = options
+    this._completed = 0
 
     this._workers = [...new Array(options.count)].map(_ =>
       new WorkerInstance(WorkerClass, options)
@@ -105,6 +107,16 @@ class PoolInstance {
 
   schedule () {
     let { Task } = this._options
+
+    let notify = () => {
+      this._completed += 1
+      this._listeners.forEach(f => {
+        let pending = this._queue.length
+        let completed = this._completed
+        f({ pending, completed })
+      })
+    }
+
     this._workers.filter(w => {
       return w.pending === 0
     }).forEach(w => {
@@ -113,11 +125,13 @@ class PoolInstance {
         let { resolve, reject } = this._pending[next._id]
         if (Task) {
           w.dispatch(next._type, next.data).fork(reject, (value) => {
+            notify()
             delete this._pending[next._id]
             resolve(value)
           })
         } else {
           w.dispatch(next._type, next.data).then(resolve, reject).then(() => {
+            notify()
             delete this._pending[next._id]
           })
         }
@@ -142,6 +156,15 @@ class PoolInstance {
     } else {
       return new P(resolver)
     }
+  }
+
+  clear () {
+    this._completed = 0
+    this._queue = []
+  }
+
+  subscribe (f) {
+    this._listeners.push(f)
   }
 }
 
