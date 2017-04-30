@@ -1,7 +1,7 @@
-
 const WorkerInstance = require('./worker-instance')
 const PoolInstance = require('./pool-instance')
 const { RETURN, ERROR } = require('./message-types')
+const { merge } = require('./util')
 
 class Battalion {
   constructor (WorkerClass, options = {}) {
@@ -10,13 +10,14 @@ class Battalion {
   }
 
   createInstance (localOptions) {
-    let options = Object.assign({}, localOptions, this._options)
-    return new WorkerInstance(this.WorkerClass, options)
+    let options = merge(localOptions, this._options)
+    return new WorkerInstance(this.WorkerClass, null, options)
   }
 
   createPool (count, localOptions) {
     if (!count) throw new Error('Count is required')
-    return new PoolInstance(this.WorkerClass, Object.assign({ count }, localOptions, this._options))
+    let options = merge(this._options, localOptions, { count })
+    return new PoolInstance(this.WorkerClass, null, options)
   }
 
   static export (context, methods) {
