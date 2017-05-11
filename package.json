@@ -1,6 +1,6 @@
 {
   "name": "battalion",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Web worker management utilities",
   "main": "src/index.js",
   "author": "Justin Tormey <jrtormey@gmail.com>",
