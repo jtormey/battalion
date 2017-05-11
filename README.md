@@ -16,7 +16,7 @@ To expose an interface from a Worker:
 // src/worker-module.js
 import Battalion from 'battalion'
 
-Battalion.export({
+Battalion.export(self, {
   addTwo ({ first, second }) {
     return first + second
   }
@@ -48,6 +48,14 @@ Options object:
 ### Battalion(MyWorker, options)
 
 `MyWorker`: Worker class.
+
+### Battalion.export(context, methods)
+
+Exposes methods from a worker file.
+
+`context`: The worker context (should be `self`)
+
+`methods`: Object containing methods that will be called by `dispatch`.
 
 ### Battalion#createInstance(options)
 
