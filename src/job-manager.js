@@ -74,7 +74,7 @@ class JobManager {
 
   clear () {
     this._jobQueue = []
-    this._coompleted = 0
+    this._completed = 0
   }
 
   _flush () {
